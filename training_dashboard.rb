@@ -51,5 +51,4 @@ def gather_data
   end
 end
 forms_spreadsheets_ids
-binding.pry
 

@@ -1,4 +1,4 @@
-Class Training < Sinatra::Application
+class Training < Sinatra::Application
  get '/' do
    haml :index
  end
