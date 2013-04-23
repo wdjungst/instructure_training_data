@@ -22,6 +22,8 @@
     .tabbable.tabs-left
       %ul.nav.nav-tabs
         %li.active
+          %a{:href => "#course_total", "data-toggle" => "tab"} Course Total
+        %li
           %a{:href => "#week1", "data-toggle" => "tab"} Week 1
         %li
           %a{:href => "#week2", "data-toggle" => "tab"} Week 2
@@ -38,7 +40,9 @@
         %li
           %a{:href => "#week8", "data-toggle" => "tab"} Week 8
       .tab-content
-        .tab-pane.active#week1
+        .tab-pane.active#course_total
+          .graph-container
+        .tab-pane#week1
           .graph-container
         .tab-pane#week2
           .graph-container
