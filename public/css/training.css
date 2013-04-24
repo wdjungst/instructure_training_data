@@ -1,0 +1,15 @@
+.title {
+  margin-bottom: 30px; }
+
+.content-wrapper {
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto; }
+
+.graph-container {
+  margin-top: 40px; }
+
+#users-btn {
+  float: left;
+  margin-right: 20px;
+  margin-top: 5px; }

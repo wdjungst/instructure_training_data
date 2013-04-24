@@ -2,14 +2,48 @@
 (function() {
 
   $(function() {
-    var arrayOfData;
-    arrayOfData = new Array([10.3, "Helice Agria", "#4876b9"], [15.2, "Kylie Edgecomb", "#9a1d1d"], [13.1, "Crystal Gasell", "#48a637"], [16.3, "Shaun Holland", "#0d82df"], [14.5, "Kar-On Lee", "#ff7300"], [22.0, "Rick Murch-Shafer", "#5a3764"], [8.6, "Gretchen Schaefer", "#3790e8"], [16.7, "Shelley Stewart", "#1a0edb"], [18, "Thomas Turano", "#33338b"], [15.8, "Deidre Tyler", "#394611"]);
-    return $(".graph-container").jqBarGraph({
-      data: arrayOfData,
-      legend: true,
-      legendWidth: 200,
-      sort: 'asc',
-      width: '800px'
+    var arrayOfData, colors, populate_data, week, weekClickHandler, weeks, _i, _len;
+    arrayOfData = [];
+    colors = ['#FF3300', '#FF6633', '#33FF33', '#0000CC', '#00CCCC', '#9966CC', '#003300', '#FF9933', '#660033', '#669900', '#33CC33', '#CC0000', '#66FF66', '#3399FF', '#660066', '#99FFFF', '#99FF33', '#FF6666', '#00CC99', '#FFFF99'];
+    populate_data = function(users) {
+      var a, array, el, index, number, temp, _i, _len;
+      arrayOfData = [];
+      array = users.split('~');
+      for (index = _i = 0, _len = array.length; _i < _len; index = ++_i) {
+        el = array[index];
+        a = el.split(',');
+        number = parseFloat(a[0]);
+        temp = [];
+        temp.push(number);
+        temp.push(a[1]);
+        temp.push(colors[index]);
+        arrayOfData.push(temp);
+      }
+      arrayOfData.pop();
+      return $(".graph-container").jqBarGraph({
+        data: arrayOfData,
+        legend: true,
+        legendWidth: 200,
+        sort: 'asc',
+        width: '900px'
+      });
+    };
+    weeks = ['0', '1', '2', '3', '4', '5', '6', '7', '8'];
+    weekClickHandler = function(week) {
+      return $("#week" + week).bind('click', function(e) {
+        $('.graph-container').empty();
+        e.preventDefault();
+        return $.get("/week/" + week, function(data) {
+          return populate_data(data);
+        });
+      });
+    };
+    for (_i = 0, _len = weeks.length; _i < _len; _i++) {
+      week = weeks[_i];
+      weekClickHandler(week);
+    }
+    return $.get("/all_posts", function(response) {
+      return populate_data(response);
     });
   });
 

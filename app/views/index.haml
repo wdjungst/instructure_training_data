@@ -18,46 +18,55 @@
     %link{:href => "css/base.min.css", :rel => "stylesheet"}/
     %script{:src => "/javascripts/modernizr-2.6.2-respond-1.1.0.min.js"}
   %body
-    %legend CAT Feedback
-    .tabbable.tabs-left
-      %ul.nav.nav-tabs
-        %li.active
-          %a{:href => "#course_total", "data-toggle" => "tab"} Course Total
-        %li
-          %a{:href => "#week1", "data-toggle" => "tab"} Week 1
-        %li
-          %a{:href => "#week2", "data-toggle" => "tab"} Week 2
-        %li
-          %a{:href => "#week3", "data-toggle" => "tab"} Week 3
-        %li
-          %a{:href => "#week4", "data-toggle" => "tab"} Week 4
-        %li
-          %a{:href => "#week5", "data-toggle" => "tab"} Week 5
-        %li
-          %a{:href => "#week6", "data-toggle" => "tab"} Week 6
-        %li
-          %a{:href => "#week7", "data-toggle" => "tab"} Week 7
-        %li
-          %a{:href => "#week8", "data-toggle" => "tab"} Week 8
-      .tab-content
-        .tab-pane.active#course_total
-          .graph-container
-        .tab-pane#week1
-          .graph-container
-        .tab-pane#week2
-          .graph-container
-        .tab-pane#week3
-          .graph-container
-        .tab-pane#week4
-          .graph-container
-        .tab-pane#week5
-          .graph-container
-        .tab-pane#week6
-          .graph-container
-        .tab-pane#week7
-          .graph-container
-        .tab-pane#week8
-          .graph-container
+    .content-wrapper
+      .row-fluid.span12
+        .page-header.title 
+          %h1 
+            CAT Training Outlines Feedback Activity
+            %small App by David Jungst
+        .tabbable.tabs-left
+          %ul.nav.nav-tabs
+            %li.active#week0
+              %a{:href => "#course_total", "data-toggle" => "tab"} Course Total
+            %li#week1
+              %a{:href => "#week1", "data-toggle" => "tab"} Week 1
+            %li#week2
+              %a{:href => "#week2", "data-toggle" => "tab"} Week 2
+            %li#week3
+              %a{:href => "#week3", "data-toggle" => "tab"} Week 3
+            %li#week4
+              %a{:href => "#week4", "data-toggle" => "tab"} Week 4
+            %li#week5
+              %a{:href => "#week5", "data-toggle" => "tab"} Week 5
+            %li#week6
+              %a{:href => "#week6", "data-toggle" => "tab"} Week 6
+            %li#week7
+              %a{:href => "#week7", "data-toggle" => "tab"} Week 7
+            %li#week8
+              %a{:href => "#week8", "data-toggle" => "tab"} Week 8
+          .tab-content
+            .tab-pane.active#course_total
+              .graph-container
+            .tab-pane#week1
+              .graph-container
+            .tab-pane#week2
+              .graph-container
+            .tab-pane#week3
+              .graph-container
+            .tab-pane#week4
+              .graph-container
+            .tab-pane#week5
+              .graph-container
+            .tab-pane#week6
+              .graph-container
+            .tab-pane#week7
+              .graph-container
+            .tab-pane#week8
+              .graph-container
+        .container        
+          .btn-group#users-btn
+            %a.btn{"data-toggle" => "dropdown", :href => "#"} Users
+          %h4 *Data is updated every 24 hours.       
     %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/bootstrap.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/jqBarGraph.1.1.js"}
