@@ -1,1 +1,7 @@
 config/*.yml
+.DS_Store
+.sass-cache/
+Gemfile.lock
+app/.DS_Store
+config/.DS_store
+public/.DS_store

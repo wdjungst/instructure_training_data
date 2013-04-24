@@ -1,10 +1,20 @@
 require 'rubygems'
-require 'mongoid'
 require 'pry'
-require File.dirname(__FILE__) + '../../models/mongoid_db'
+require 'active_record'
+
+ActiveRecord::Base.establish_connection(
+  :adapter => 'mysql',
+  :host => 'localhost',
+  :encoding => 'utf8',
+  :database => 'training',
+  :username => 'root',
+  :password => 'password'
+)
+
+class Participant < ActiveRecord::Base
+end
 
 class Training < Sinatra::Application
-  Mongoid.load!("./config/mongoid.yml")
   get '/' do
     haml :index
     binding.pry
