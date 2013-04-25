@@ -9,7 +9,22 @@
 .graph-container {
   margin-top: 40px; }
 
+.scroll-menu {
+  height: 200px;
+  overflow-y: scroll; }
+
+.modal-container {
+  width: 450px; }
+
 #users-btn {
   float: left;
   margin-right: 20px;
+  margin-left: -20px;
   margin-top: 5px; }
+
+#modal-users {
+  float: right; }
+
+#chartdiv {
+  height: 400px;
+  width: 300px; }

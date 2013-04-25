@@ -2,16 +2,26 @@
 (function() {
 
   $(function() {
-    var arrayOfData, colors, populate_data, week, weekClickHandler, weeks, _i, _len;
+    var all_users, arrayOfData, colors, getEventTarget, getName, listItemClickHandler, listItems, plot, populate_data, ul, usersClickHandler, week, weekClickHandler, weeks, _i, _len;
     arrayOfData = [];
     colors = ['#FF3300', '#FF6633', '#33FF33', '#0000CC', '#00CCCC', '#9966CC', '#003300', '#FF9933', '#660033', '#669900', '#33CC33', '#CC0000', '#66FF66', '#3399FF', '#660066', '#99FFFF', '#99FF33', '#FF6666', '#00CC99', '#FFFF99'];
-    populate_data = function(users) {
-      var a, array, el, index, number, temp, _i, _len;
+    all_users = '';
+    getName = function(name) {
+      return alert(name);
+    };
+    populate_data = function(users, id) {
+      var $userDropdown, a, array, el, index, name, number, temp, _i, _len;
       arrayOfData = [];
       array = users.split('~');
+      $userDropdown = $(id);
+      $userDropdown.empty();
       for (index = _i = 0, _len = array.length; _i < _len; index = ++_i) {
         el = array[index];
         a = el.split(',');
+        name = a[1];
+        if (typeof name !== "undefined") {
+          $userDropdown.append("<li><a onclick='getName(this.value)' value='" + name + "' href='#'>" + name + "</a></li>");
+        }
         number = parseFloat(a[0]);
         temp = [];
         temp.push(number);
@@ -20,6 +30,7 @@
         arrayOfData.push(temp);
       }
       arrayOfData.pop();
+      $(".graph-container").empty();
       return $(".graph-container").jqBarGraph({
         data: arrayOfData,
         legend: true,
@@ -34,16 +45,71 @@
         $('.graph-container').empty();
         e.preventDefault();
         return $.get("/week/" + week, function(data) {
-          return populate_data(data);
+          return populate_data(data, '#user_dropdown');
         });
       });
     };
+    listItems = ['0', '1'];
+    listItemClickHandler = function(listItem) {
+      return $("#listItem" + listItem).bind('click', function(e) {
+        return alert('click');
+      });
+    };
+    plot = $.jqplot("chartdiv", [[1, 0, 3, 9, 4, 6, 6, 8]], {
+      title: "Summary",
+      axesDefaults: {
+        labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+        tickOptions: {
+          angle: -30,
+          fotSize: '10pt',
+          mark: 'cross'
+        }
+      },
+      axes: {
+        xaxis: {
+          renderer: $.jqplot.CategoryAxisRenderer,
+          ticks: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+          pad: 0
+        },
+        yaxis: {
+          label: "Posts",
+          min: 0
+        }
+      },
+      highlighter: {
+        show: true,
+        tooltipAxes: 'y',
+        sizeAdjust: 7.5
+      }
+    });
+    usersClickHandler = function() {
+      return $('#modal-btn').bind('click', function(e) {
+        return $('#users-modal').modal('show');
+      });
+    };
+    usersClickHandler();
     for (_i = 0, _len = weeks.length; _i < _len; _i++) {
       week = weeks[_i];
       weekClickHandler(week);
     }
+    getEventTarget = function(e) {
+      e = e || window.event;
+      return e.target || e.srcElement;
+    };
+    ul = document.getElementById("user_dropdown");
+    ul.onClick = function(event) {
+      var target;
+      target = getEventTarget(event);
+      return alert(target.innerHTML);
+    };
+    $('#users-modal').on("shown", function() {
+      plot.replot();
+      return populate_data(all_users, '#modal_dropdown');
+    });
     return $.get("/all_posts", function(response) {
-      return populate_data(response);
+      all_users = response;
+      return populate_data(response, '#user_dropdown');
     });
   });
 

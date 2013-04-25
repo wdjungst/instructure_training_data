@@ -16,6 +16,7 @@ class Participant < ActiveRecord::Base
     drop_table :participants if table_exists? 'participants'
     create_table :participants do |t|
       t.string :name
+      t.string :responses
       t.integer :week1
       t.integer :week2
       t.integer :week3

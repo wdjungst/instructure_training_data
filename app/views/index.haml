@@ -16,6 +16,7 @@
         padding-bottom: 40px;
       }
     %link{:href => "css/base.min.css", :rel => "stylesheet"}/
+    %link{:href => "css/jquery.jqplot.css", :rel => "stylesheet", :type => "text/css"}/
     %script{:src => "/javascripts/modernizr-2.6.2-respond-1.1.0.min.js"}
   %body
     .content-wrapper
@@ -64,10 +65,32 @@
             .tab-pane#week8
               .graph-container
         .container        
-          .btn-group#users-btn
-            %a.btn{"data-toggle" => "dropdown", :href => "#"} Users
+          .btn-group.dropdown#users-btn
+            %button.btn#modal-btn Users
+            %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
+              %span.caret
+            %ul.dropdown-menu.scroll-menu#user_dropdown
           %h4 *Data is updated every 24 hours.       
+        .modal.hide.fade#users-modal
+          .modal-header
+            %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} X
+            %h3 Week By Week Analysis
+          .modal-body
+            .modal-container
+              .btn-group.dropdown#modal-users
+                %button.btn.dropdown-toggle{"data-toggle" => "dropdown"} Users
+                %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
+                  %span.caret
+                %ul.dropdown-menu.scroll-menu#modal_dropdown
+              #chartdiv
+          .modal-footer
+            %button.btn.btn-primary{"aria-hidden" => "true", "data-dismiss" => "modal"} Close
     %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/jquery.jqplot.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/jqplot.canvasTextRenderer.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/jqplot.canvasAxisTickRenderer.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/jqplot.categoryAxisRenderer.min.js"}
+    %script{:type => "text/javascript", :src => "/javascripts/jqplot.highlighter.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/bootstrap.min.js"}
     %script{:type => "text/javascript", :src => "/javascripts/jqBarGraph.1.1.js"}
     %script{:type => "text/javascript", :src => "/javascripts/training.js"}
