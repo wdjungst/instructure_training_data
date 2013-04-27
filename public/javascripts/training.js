@@ -2,12 +2,62 @@
 (function() {
 
   $(function() {
-    var all_users, arrayOfData, colors, getEventTarget, getName, listItemClickHandler, listItems, plot, populate_data, ul, usersClickHandler, week, weekClickHandler, weeks, _i, _len;
+    var all_users, arrayOfData, colors, graphData, graphInfo, listItemClickHandler, populate_data, usersClickHandler, week, weekClickHandler, weeks, _i, _len;
     arrayOfData = [];
-    colors = ['#FF3300', '#FF6633', '#33FF33', '#0000CC', '#00CCCC', '#9966CC', '#003300', '#FF9933', '#660033', '#669900', '#33CC33', '#CC0000', '#66FF66', '#3399FF', '#660066', '#99FFFF', '#99FF33', '#FF6666', '#00CC99', '#FFFF99'];
+    colors = ['#FF3300', '#FF6633', '#33FF33', '#0000CC', '#00CCCC', '#9966CC', '#FFFF00', '#FF9933', '#003300', '#3399FF', '#33CC33', '#CC0000', '#66FF66', '#3399FF', '#660066', '#99FFFF', '#99FF33', '#FF6666', '#00CC99', '#FFFF99'];
     all_users = '';
-    getName = function(name) {
-      return alert(name);
+    graphData = [];
+    graphInfo = function(userInfo) {
+      var el, number, plot, _i, _len;
+      graphData = [];
+      for (_i = 0, _len = userInfo.length; _i < _len; _i++) {
+        el = userInfo[_i];
+        number = parseInt(el);
+        graphData.push(number);
+      }
+      plot = $.jqplot("chartdiv", [graphData], {
+        title: "Summary",
+        axesDefaults: {
+          labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+          tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+          tickOptions: {
+            angle: -30,
+            fotSize: '10pt',
+            mark: 'cross'
+          }
+        },
+        axes: {
+          xaxis: {
+            renderer: $.jqplot.CategoryAxisRenderer,
+            ticks: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+            pad: 0
+          },
+          yaxis: {
+            tickInterval: 1,
+            tickOptions: {
+              formatString: '%d'
+            },
+            label: "Suggestions",
+            min: 0
+          }
+        },
+        highlighter: {
+          show: true,
+          tooltipAxes: 'y',
+          sizeAdjust: 7.5
+        }
+      });
+      return plot.replot();
+    };
+    listItemClickHandler = function() {
+      return $("[id^='list_item']").bind('click', function(e) {
+        var name;
+        name = $(this).text();
+        $('#user-label').text(name);
+        return $.get("/user_info/" + name, function(data) {
+          return graphInfo(data.split(","));
+        });
+      });
     };
     populate_data = function(users, id) {
       var $userDropdown, a, array, el, index, name, number, temp, _i, _len;
@@ -20,7 +70,7 @@
         a = el.split(',');
         name = a[1];
         if (typeof name !== "undefined") {
-          $userDropdown.append("<li><a onclick='getName(this.value)' value='" + name + "' href='#'>" + name + "</a></li>");
+          $userDropdown.append("<li><a href='#' id='list_item_" + index + "'>" + name + "</a></li>");
         }
         number = parseFloat(a[0]);
         temp = [];
@@ -30,12 +80,13 @@
         arrayOfData.push(temp);
       }
       arrayOfData.pop();
+      listItemClickHandler();
       $(".graph-container").empty();
       return $(".graph-container").jqBarGraph({
         data: arrayOfData,
         legend: true,
         legendWidth: 200,
-        sort: 'asc',
+        sort: 'desc',
         width: '900px'
       });
     };
@@ -49,40 +100,6 @@
         });
       });
     };
-    listItems = ['0', '1'];
-    listItemClickHandler = function(listItem) {
-      return $("#listItem" + listItem).bind('click', function(e) {
-        return alert('click');
-      });
-    };
-    plot = $.jqplot("chartdiv", [[1, 0, 3, 9, 4, 6, 6, 8]], {
-      title: "Summary",
-      axesDefaults: {
-        labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
-        tickOptions: {
-          angle: -30,
-          fotSize: '10pt',
-          mark: 'cross'
-        }
-      },
-      axes: {
-        xaxis: {
-          renderer: $.jqplot.CategoryAxisRenderer,
-          ticks: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
-          pad: 0
-        },
-        yaxis: {
-          label: "Posts",
-          min: 0
-        }
-      },
-      highlighter: {
-        show: true,
-        tooltipAxes: 'y',
-        sizeAdjust: 7.5
-      }
-    });
     usersClickHandler = function() {
       return $('#modal-btn').bind('click', function(e) {
         return $('#users-modal').modal('show');
@@ -93,18 +110,7 @@
       week = weeks[_i];
       weekClickHandler(week);
     }
-    getEventTarget = function(e) {
-      e = e || window.event;
-      return e.target || e.srcElement;
-    };
-    ul = document.getElementById("user_dropdown");
-    ul.onClick = function(event) {
-      var target;
-      target = getEventTarget(event);
-      return alert(target.innerHTML);
-    };
     $('#users-modal').on("shown", function() {
-      plot.replot();
       return populate_data(all_users, '#modal_dropdown');
     });
     return $.get("/all_posts", function(response) {

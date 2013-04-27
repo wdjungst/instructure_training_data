@@ -1,4 +1,4 @@
-source :rubygems
+source "https://www.rubygems.org"
 
 gem "sinatra"
 gem "sinatra-minify"
@@ -9,3 +9,4 @@ gem "rack-contrib"
 gem "haml"
 gem "activerecord"
 gem "activeresource"
+gem "shotgun"

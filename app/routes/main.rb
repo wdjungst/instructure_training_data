@@ -53,4 +53,9 @@ class Training < Sinatra::Application
   get '/week/:number' do |number|
     weekly_posts(number)    
   end
+
+  get '/user_info/:name' do |name|
+    user = Participant.where(:name => name).first
+    "#{user.week1}, #{user.week2}, #{user.week3}, #{user.week4}, #{user.week5}, #{user.week6}, #{user.week7}, #{user.week8}"
+  end
 end

@@ -65,16 +65,14 @@
             .tab-pane#week8
               .graph-container
         .container        
-          .btn-group.dropdown#users-btn
-            %button.btn#modal-btn Users
-            %button.btn.dropdown-toggle{"data-toggle" => "dropdown"}
-              %span.caret
-            %ul.dropdown-menu.scroll-menu#user_dropdown
+          .btn-group#users-btn
+            %button.btn.btn-primary#modal-btn View By User
           %h4 *Data is updated every 24 hours.       
         .modal.hide.fade#users-modal
           .modal-header
             %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} X
             %h3 Week By Week Analysis
+            .label.label-success.large#user-label Select User
           .modal-body
             .modal-container
               .btn-group.dropdown#modal-users

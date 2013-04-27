@@ -2,6 +2,7 @@ require 'rubygems'
 require 'yaml'
 require 'google_drive'
 require 'pry'
+require 'optparse'
 require File.expand_path(File.dirname(__FILE__) + '/config/database')
 require 'active_resource'
 
@@ -35,7 +36,16 @@ end
 class Participants < ActiveRecord::Base
 end
 
+def connection_failed(object)
+  if object == ''
+    return true
+  else
+    return false
+  end
+end
+
 def users
+  ws = ''
   current_users = []
   sheet = @session.spreadsheet_by_key(CONFIG['users'])
   ws = sheet.worksheets[0]
@@ -47,11 +57,12 @@ def users
     exists = false
     participants.each do |p|
       if u == p.name
-        exits = true
+        exists = true
       end
     end
     Participant.create!(:name => u, :week1 => 0, :week2 => 0, :week3 => 0, :week4 => 0, :week5 => 0, :week6 => 0, :week7 => 0, :week8 => 0) 
   end
+  email_admin('users') if connection_failed(ws)
 end
 
 def forms_spreadsheets_ids(feedback_keys = @feedback_keys)
@@ -65,12 +76,14 @@ def forms_spreadsheets_ids(feedback_keys = @feedback_keys)
 end
 
 def gather_data
+  ws = ''
   weeks = {:week1 => "week1", :week2 => "week2", :week3 => "week3", :week4 => "week4", :week5 => "week5", :week6 => "week6", :week7 => "week7", :week8 => "week8" }
   @spreadsheet_ids.each_with_index do |week, i|
     week_num = weeks.key("week#{i + 1}")
     week.each do |id|
       spreadsheet = @session.spreadsheet_by_key(id)
       ws = spreadsheet.worksheets[0]
+      email_admin('gather_data') if connection_failed(ws)
       ws.num_rows.times do |row|
         row += 1
         person = Participant.where(:name => ws[row,4].strip)
@@ -82,7 +95,38 @@ def gather_data
     end
   end
 end
-users
-binding.pry
-forms_spreadsheets_ids
-gather_data
+
+def email_admin(method)
+    
+end
+
+def options
+  options = {}
+  optparse = OptionParser.new do |opts|
+    options[:run] = false
+    
+    opts.on('-r', '--run', 'Run program') do
+      options[:run] = true
+    end
+    opts.on('-n', 'new', 'Update spreadsheets with new data') do
+      options[:new] = true
+    end
+    opts.on('-h', '--help', 'Display this screen') do
+      puts opts
+      exit
+    end
+  end
+
+  optparse.parse!
+
+  if options[:run]
+    users
+    forms_spreadsheets_ids
+    gather_data
+  end
+  if options[:new]
+    update_spreadsheet_data
+  end
+end
+
+options
