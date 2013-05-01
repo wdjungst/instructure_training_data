@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'pry'
 require 'active_record'
 
 ActiveRecord::Base.establish_connection(
@@ -11,17 +10,30 @@ ActiveRecord::Base.establish_connection(
   :password => 'password'
 )
 
-class Participant < ActiveRecord::Base
+class TrainingData < ActiveRecord::Base
+end
+
+class StagingTrainingData < ActiveRecord::Base
 end
 
 class Training < Sinatra::Application
+  @@table = TrainingData
+
+  def select_table
+    if TrainingData.find(:all).count == 0
+      @@table = StagingTrainingData
+    else
+      @@table = TrainingData
+    end
+  end
+
   def total_all_weeks(user)
     user.week1 + user.week2 + user.week3 + user.week4 + user.week5 + user.week6 + user.week7 + user.week8
   end
 
   def total_posts
     users = []
-    people = Participant.find(:all)
+    people = @@table.find(:all)
     people.each do |person|
       users << "#{total_all_weeks(person)},#{person.name}~"
     end
@@ -30,7 +42,7 @@ class Training < Sinatra::Application
 
   def weekly_posts(number)
     users = []
-    people = Participant.find(:all)
+    people = @@table.find(:all)
     people.each do |person| 
       if number == '0'
         value = total_all_weeks(person)
@@ -43,6 +55,7 @@ class Training < Sinatra::Application
   end
 
   get '/' do
+    select_table
     haml :index
   end
 
@@ -55,7 +68,7 @@ class Training < Sinatra::Application
   end
 
   get '/user_info/:name' do |name|
-    user = Participant.where(:name => name).first
+    user = @@table.where(:name => name).first
     "#{user.week1}, #{user.week2}, #{user.week3}, #{user.week4}, #{user.week5}, #{user.week6}, #{user.week7}, #{user.week8}"
   end
 end

@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'yaml'
 require 'google_drive'
-require 'pry'
 require 'optparse'
 require File.expand_path(File.dirname(__FILE__) + '/config/database')
 require 'active_resource'
@@ -33,15 +32,32 @@ end
 
 @session = GoogleDrive.login(CONFIG['user'], CONFIG['pass'])
 
-class Participants < ActiveRecord::Base
+@copy_data = true
+
+class TrainingData < ActiveRecord::Base
+end
+
+class StagingTrainingData < ActiveRecord::Base
 end
 
 def connection_failed(object)
   if object == ''
-    return true
+    @copy_data = false
   else
-    return false
+    @copy_data = true
   end
+end
+
+def copy_tables
+  StagingTrainingData.destroy_all
+  records = TrainingData.find(:all)
+  records.each do |r|
+    StagingTrainingData.create!(:name => r.name, :week1 => r.week1, :week2 => r.week2, :week3 => r.week3, :week4 => r.week4, :week5 => r.week5, :week6 => r.week6, :week7 => r.week7, :week8 => r.week8) 
+  end
+end
+
+def empty_main_table
+  TrainingData.destroy_all
 end
 
 def users
@@ -49,10 +65,11 @@ def users
   current_users = []
   sheet = @session.spreadsheet_by_key(CONFIG['users'])
   ws = sheet.worksheets[0]
+  connection_failed(ws)
   ws.num_rows.times do |user|
     current_users << ws[user + 1,1]
   end
-  participants = Participants.find(:all)
+  participants = TrainingData.find(:all)
   current_users.each do |u|
     exists = false
     participants.each do |p|
@@ -60,15 +77,16 @@ def users
         exists = true
       end
     end
-    Participant.create!(:name => u, :week1 => 0, :week2 => 0, :week3 => 0, :week4 => 0, :week5 => 0, :week6 => 0, :week7 => 0, :week8 => 0) 
+    TrainingData.create!(:name => u, :week1 => 0, :week2 => 0, :week3 => 0, :week4 => 0, :week5 => 0, :week6 => 0, :week7 => 0, :week8 => 0) 
   end
-  email_admin('users') if connection_failed(ws)
 end
 
 def forms_spreadsheets_ids(feedback_keys = @feedback_keys)
+  collection = ''
   feedback_keys.each_value do |week|
     ids = []
     collection = @session.collection_by_url "#{@feedback}#{week}"
+    connection_failed(collection)
     spreadsheets = collection.spreadsheets
     spreadsheets.each { |sheet| ids << sheet.resource_id.split(":").last }
     @spreadsheet_ids << ids
@@ -83,10 +101,10 @@ def gather_data
     week.each do |id|
       spreadsheet = @session.spreadsheet_by_key(id)
       ws = spreadsheet.worksheets[0]
-      email_admin('gather_data') if connection_failed(ws)
+      connection_failed(ws)
       ws.num_rows.times do |row|
         row += 1
-        person = Participant.where(:name => ws[row,4].strip)
+        person = TrainingData.where(:name => ws[row,4].strip)
         if person.count != 0
           person = person.first
           person.increment!(week_num) 
@@ -96,9 +114,6 @@ def gather_data
   end
 end
 
-def email_admin(method)
-    
-end
 
 def options
   options = {}
@@ -120,9 +135,11 @@ def options
   optparse.parse!
 
   if options[:run]
+   empty_main_table
     users
     forms_spreadsheets_ids
     gather_data
+    copy_tables if @copy_data == true
   end
   if options[:new]
     update_spreadsheet_data
