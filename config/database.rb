@@ -9,5 +9,3 @@ ActiveRecord::Base.establish_connection(
   :username => 'root',
   :password => 'password'
 )
-
-

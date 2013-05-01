@@ -2,8 +2,10 @@ require 'rubygems'
 require 'yaml'
 require 'google_drive'
 require 'optparse'
-require File.expand_path(File.dirname(__FILE__) + '/config/database')
 require 'active_resource'
+require File.expand_path(File.dirname(__FILE__) + '/config/database')
+require File.expand_path(File.dirname(__FILE__) + '/app/models/training_data')
+require File.expand_path(File.dirname(__FILE__) + '/app/models/staging_training_data')
 
 CONFIG = YAML::load_file(File.expand_path(File.dirname(__FILE__) + '/config/config.yml'))
 
@@ -33,12 +35,6 @@ end
 @session = GoogleDrive.login(CONFIG['user'], CONFIG['pass'])
 
 @copy_data = true
-
-class TrainingData < ActiveRecord::Base
-end
-
-class StagingTrainingData < ActiveRecord::Base
-end
 
 def connection_failed(object)
   if object == ''

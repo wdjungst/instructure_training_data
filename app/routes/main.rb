@@ -1,20 +1,7 @@
 require 'rubygems'
 require 'active_record'
-
-ActiveRecord::Base.establish_connection(
-  :adapter => 'mysql',
-  :host => 'localhost',
-  :encoding => 'utf8',
-  :database => 'training',
-  :username => 'root',
-  :password => 'password'
-)
-
-class TrainingData < ActiveRecord::Base
-end
-
-class StagingTrainingData < ActiveRecord::Base
-end
+require "#{settings.root}/app/models/training_data" 
+require "#{settings.root}/app/models/staging_training_data" 
 
 class Training < Sinatra::Application
   @@table = TrainingData

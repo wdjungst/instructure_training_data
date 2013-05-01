@@ -4,6 +4,7 @@ require 'sinatra/minify'
 require 'yaml'
 require 'haml'
 require 'rack/contrib'
+require File.expand_path(File.dirname(__FILE__) + '/config/database')
 
 class Training < Sinatra::Application
   register Sinatra::Minify
@@ -11,6 +12,7 @@ class Training < Sinatra::Application
   set :root, 'app', File.dirname(__FILE__)
   set :js_path, 'public/javascripts'
   set :js_url, '/javascripts'
+  set :enviornment, :production
 
   require_relative 'app/routes/init'
 end
