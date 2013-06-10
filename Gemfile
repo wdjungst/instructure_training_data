@@ -1,5 +1,6 @@
 source "https://www.rubygems.org"
 
+gem "capistrano"
 gem "sinatra"
 gem "sinatra-minify"
 gem "rake"
@@ -11,4 +12,12 @@ gem "sinatra-activerecord"
 gem "activerecord"
 gem "activeresource"
 gem "mysql"
-gem "google-drive"
+gem "google_drive"
+
+group :development do
+  gem "capistrano"
+end
+
+group :test do
+  gem "capistrano"
+end

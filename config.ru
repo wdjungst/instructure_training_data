@@ -7,4 +7,4 @@ disable :run
 require File.join(File.dirname(__FILE__), 'drago')
 
 use Rack::StaticCache, :urls => ["/images"], :root => Dir.pwd + '/public'
-run Sinatra::Application
+run Training.new
