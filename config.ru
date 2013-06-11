@@ -1,10 +1,10 @@
+require 'rubygems'
+require 'bundler/setup'
 require 'sinatra'
-require File.expand_path(File.dirname(__FILE__) + '/training')
+require File.join(File.dirname(__FILE__), './drago')
 
 set :environment, :production
 disable :run
 
-require File.join(File.dirname(__FILE__), 'drago')
-
 use Rack::StaticCache, :urls => ["/images"], :root => Dir.pwd + '/public'
-run Training.new
+run Drago.new

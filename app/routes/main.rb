@@ -3,7 +3,7 @@ require 'active_record'
 require "#{settings.root}/app/models/training_data" 
 require "#{settings.root}/app/models/staging_training_data" 
 
-class Training < Sinatra::Application
+class Drago < Sinatra::Application
   @@table = TrainingData
 
   def select_table

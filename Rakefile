@@ -1,2 +1,2 @@
 require 'sinatra/activerecord/rake'
-require './training.rb'
+require './drago.rb'
